@@ -1,0 +1,47 @@
+#!/bin/sh
+
+# Mirrors the home:vjt:ifad builservice repo for OpenSUSE 11.4,
+# using ftp5.gwdg.de. Meant to be run daily.
+#
+#  -- m.barnaba@ifad.org  Fri Sep 27 16:13:19 CEST 2013
+#
+MIRROR_DIR=/srv/opensuse/repositories
+WGET=/usr/bin/wget
+REPO=home:/vjt:/ifad/openSUSE_11.4/
+REPO_DIR=$MIRROR_DIR/$REPO
+SOURCE="--cut-dirs 3 ftp://ftp5.gwdg.de/pub/opensuse/repositories/$REPO"
+
+if [ `id -u` -eq 0 ]; then
+  echo "Please do not run this as root. Use the 'mirror' user."
+  exit -1
+fi
+
+LOCK=/var/lock/`basename $0`.lock
+if ! lockfile -l 14400 -r 0 $LOCK; then
+  echo "Another process is already running. Aborting."
+  exit 1
+fi
+
+echo
+echo "-----------------------------------------------------------------------"
+echo "`date` - OpenSuSE buildservice repo for 11.4 mirror started"
+
+
+cd $MIRROR_DIR
+
+# Fetch only our $REPO
+#
+$WGET --quiet --no-host-directories --recursive --continue $SOURCE
+
+ret=$?
+
+echo "`date` - OpenSuSE buildservice repo for 11.4 mirror completed with status $ret"
+echo "-----------------------------------------------------------------------"
+echo
+
+find $REPO_DIR -name \*.repo -print0 | \
+  xargs  -0 sed -i 's#download.opensuse.org#packages.ifad.org#'
+
+rm -f $LOCK
+
+exit $ret

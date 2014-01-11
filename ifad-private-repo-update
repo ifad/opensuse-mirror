@@ -1,0 +1,40 @@
+# Check the last modified file in $REPODIR - if it is the repomd.xml file,
+# then no changes occurred. Otherwise, run createrepo to regenerate it.
+#
+#  - a.dellaera@ifad.org  Fri Dec 12 12:02:00 CET 2013
+#  - m.barnaba@ifad.org   Sun Dec 15 21:32:26 CET 2013
+#  - m.barnaba@ifad.org   Sat Dec 28 21:13:20 CET 2013
+
+REPODIR=/srv/opensuse/repositories/ifad-private
+
+FILELIST=$REPODIR/.filelist
+TMPLIST=$REPODIR/.filelist.tmp
+
+if [ -f "$TMPLIST" ]; then
+  # Another process is running, do not overlap.
+  echo "RPM update started on `stat -c %y "$TMPLIST"` is not completed yet as of `date --rfc-3339=ns`"
+  exit 1
+fi
+
+touch $TMPLIST
+find $REPODIR/i386 $REPODIR/x86_64 -type f | sort | tr '\n' '\0' | xargs -0 sha1sum > $TMPLIST
+
+diff=`diff -u $FILELIST $TMPLIST`
+
+if test -n "$diff"; then
+  echo -e "Updating RPM repository due to file changes.\n"
+  createrepo --update $REPODIR
+  rm $REPODIR/repodata/repomd.xml.asc
+  gpg -a --detach-sign $REPODIR/repodata/repomd.xml
+
+  echo -e "\nChanges:\n$diff"
+
+  echo -e "\nCurrent files list:"
+  cat $TMPLIST
+
+  mv $TMPLIST $FILELIST
+else
+  rm $TMPLIST
+fi
+
+exit 0
