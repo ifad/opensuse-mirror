@@ -31,6 +31,7 @@ echo "`date` - OpenSuSE mirror started"
 $RSYNC --verbose --human-readable        \
      --recursive --links --perms --times      \
      --itemize-changes --stats --delete-after \
+     --exclude='osc/'                         \
      --exclude='ports/'                       \
      --exclude='evergreen/'                   \
      --exclude='repositories/'                \
