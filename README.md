@@ -26,8 +26,8 @@ Goodies
 The `ifad-private-repo-update` keeps track of what's in a directory tree,
 storing a `.filelist` file in the directory. If something changes, then it
 runs `createrepo`. A poor man's private repository, that can be used as
-a zypper source, for your enterprise `rpm` packages that you god from your
-vendor, and you want to install using standard means.
+a zypper source, for your enterprise `rpm` packages that you got from your
+vendor and you want to install using standard means.
 
 Customization
 -------------
