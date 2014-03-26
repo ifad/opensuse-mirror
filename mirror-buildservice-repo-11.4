@@ -5,27 +5,17 @@
 #
 #  -- m.barnaba@ifad.org  Fri Sep 27 16:13:19 CEST 2013
 #
-MIRROR_DIR=/srv/opensuse/repositories
-WGET=/usr/bin/wget
-REPO=home:/vjt:/ifad/openSUSE_11.4/
+source $(dirname $(realpath $0))/.config.subr
+create_lock
+
+MIRROR_DIR=$MIRROR_DIR/repositories
+REPO=$BUILDSERVICE_REPO/openSUSE_11.4/
 REPO_DIR=$MIRROR_DIR/$REPO
-SOURCE="--cut-dirs 3 ftp://ftp5.gwdg.de/pub/opensuse/repositories/$REPO"
-
-if [ `id -u` -eq 0 ]; then
-  echo "Please do not run this as root. Use the 'mirror' user."
-  exit -1
-fi
-
-LOCK=/var/lock/`basename $0`.lock
-if ! lockfile -l 14400 -r 0 $LOCK; then
-  echo "Another process is already running. Aborting."
-  exit 1
-fi
+SOURCE="--cut-dirs 3 ftp://$FTP_HOST/pub/opensuse/repositories/$REPO"
 
 echo
 echo "-----------------------------------------------------------------------"
 echo "`date` - OpenSuSE buildservice repo for 11.4 mirror started"
-
 
 cd $MIRROR_DIR
 
@@ -39,9 +29,5 @@ echo "`date` - OpenSuSE buildservice repo for 11.4 mirror completed with status 
 echo "-----------------------------------------------------------------------"
 echo
 
-find $REPO_DIR -name \*.repo -print0 | \
-  xargs  -0 sed -i 's#download.opensuse.org#packages.ifad.org#'
-
-rm -f $LOCK
-
+replace_repo_uris
 exit $ret

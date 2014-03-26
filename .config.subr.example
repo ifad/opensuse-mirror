@@ -1,0 +1,35 @@
+#
+#  - m.barnaba@ifad.org  Wed Mar 26 17:48:07 CET 2014
+#
+
+# The mirror root
+#
+MIRROR_DIR=/srv/opensuse
+
+# The rsync host to fetch from
+#
+RSYNC_HOST=rsync.opensuse.org
+
+# The FTP host used for legacy distros
+#
+FTP_HOST=ftp5.gwdg.de
+
+# This host name
+#
+LOCAL_HOST=packages.ifad.org
+
+# Path to rsync binary
+#
+RSYNC=/usr/bin/rsync
+
+# Path to wget binary
+#
+WGET=/usr/bin/wget
+
+# Buildservice repo to mirror
+#
+BUILDSERVICE_REPO=home:/vjt:/ifad
+
+# Load functions library
+#
+source $(dirname $(realpath $0))/.functions.subr

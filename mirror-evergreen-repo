@@ -4,23 +4,13 @@
 #
 #  -- m.barnaba@ifad.org  Tue Jan  7 17:06:49 CET 2014
 #
-MIRROR_DIR=/srv/opensuse
-RSYNC=/usr/bin/rsync
+source $(dirname $(realpath $0))/.config.subr
+create_lock
+
 VERSION=11.4
 # Keep the trailing slash, or an excess standard/ directory will be created
 SOURCE=openSUSE:/Evergreen:/$VERSION/standard/
 REPO_DIR=$MIRROR_DIR/repositories/$SOURCE
-
-if [ `id -u` -eq 0 ]; then
-  echo "Please do not run this as root. Use the 'mirror' user."
-  exit -1
-fi
-
-LOCK=/var/lock/`basename $0`.lock
-if ! lockfile -l 14400 -r 0 $LOCK; then
-  echo "Another process is already running. Aborting."
-  exit 1
-fi
 
 echo
 echo "--------------------------------------------------------------"
@@ -31,7 +21,7 @@ mkdir -p $REPO_DIR
 $RSYNC --verbose --human-readable             \
      --recursive --links --perms --times      \
      --itemize-changes --stats --delete-after \
-     rsync.opensuse.org::buildservice-repos/$SOURCE $REPO_DIR
+     $RSYNC_HOST::buildservice-repos/$SOURCE $REPO_DIR
 
 ret=$?
 
@@ -39,9 +29,5 @@ echo "`date` - OpenSuSE mirror completed with status $ret"
 echo "--------------------------------------------------------------"
 echo
 
-find $REPO_DIR -name \*.repo -print0 | \
-  xargs  -0 sed -i 's#download.opensuse.org#packages.ifad.org#'
-
-rm -f $LOCK
-
+replace_repo_uris
 exit $ret

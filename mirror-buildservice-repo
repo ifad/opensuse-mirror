@@ -5,21 +5,12 @@
 #
 #  -- m.barnaba@ifad.org  Tue Feb 19 19:52:47 CET 2013
 #
-MIRROR_DIR=/srv/opensuse/repositories
-RSYNC=/usr/bin/rsync
-REPO=home:/vjt:/ifad/
-REPO_DIR=$MIRROR_DIR/$REPO
+source $(dirname $(realpath $0))/.config.subr
+create_lock
 
-if [ `id -u` -eq 0 ]; then
-  echo "Please do not run this as root. Use the 'mirror' user."
-  exit -1
-fi
-
-LOCK=/var/lock/`basename $0`.lock
-if ! lockfile -l 14400 -r 0 $LOCK; then
-  echo "Another process is already running. Aborting."
-  exit 1
-fi
+MIRROR_DIR=$MIRROR_DIR/repositories
+REPO=$BUILDSERVICE_REPO
+REPO_DIR=$MIRROR_DIR/$REPO/
 
 echo
 echo "--------------------------------------------------------------"
@@ -35,7 +26,7 @@ $RSYNC --verbose --human-readable        \
      --recursive --links --perms --times      \
      --itemize-changes --stats --delete-after \
      --exclude='openSUSE_11.4'                \
-     rsync.opensuse.org::buildservice-repos/$REPO $REPO_DIR
+     $RSYNC_HOST::buildservice-repos/$REPO $REPO_DIR
 
 ret=$?
 
@@ -43,9 +34,5 @@ echo "`date` - OpenSuSE buildservice repo mirror completed with status $ret"
 echo "--------------------------------------------------------------"
 echo
 
-find $REPO_DIR -name \*.repo -print0 | \
-  xargs  -0 sed -i 's#download.opensuse.org#packages.ifad.org#'
-
-rm -f $LOCK
-
+replace_repo_uris
 exit $ret

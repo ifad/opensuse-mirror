@@ -1,0 +1,30 @@
+# Sanity checks
+#
+if [ `id -u` -eq 0 ]; then
+  echo "Please do not run this as root. Use the 'mirror' user."
+  exit -1
+fi
+
+# Create lockfile
+#
+create_lock() {
+  LOCK=/var/lock/`basename $0`.lock
+  if ! lockfile -l 14400 -r 0 $LOCK; then
+    echo "Another process is already running. Aborting."
+    exit 1
+  fi
+}
+
+# Remove lockfile
+#
+remove_lock() {
+  rm -f $LOCK
+}
+trap 'remove_lock' 'EXIT'
+
+# Update URIs in .repo files with $LOCAL_HOST
+#
+replace_repo_uris() {
+  find $REPO_DIR -name \*.repo -print0 | \
+    xargs -0 sed -i "s#download.opensuse.org#$LOCAL_HOST#"
+}

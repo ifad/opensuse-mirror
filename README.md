@@ -32,13 +32,7 @@ vendor and you want to install using standard means.
 Customization
 -------------
 
-On your own, for now. Scripts rely on paths and repository names, referenced
-through the usage of variables in the scripts themselves. If you have the
-time to wrap things up and make a nice configuration file, a pull request
-will be accepted gladly.
-
-Also, there is some duplication across the scripts - a common `.subr` file
-containing shared functions would be great.
+Copy `.config.subr.example` into `.config.subr` and edit at will.
 
 Authors
 -------

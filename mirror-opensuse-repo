@@ -5,19 +5,8 @@
 #  -- m.barnaba@ifad.org  Tue Feb 19 19:52:47 CET 2013
 #  -- m.barnaba@ifad.org  Tue Jan  7 19:07:55 CET 2014
 #
-MIRROR_DIR=/srv/opensuse
-RSYNC=/usr/bin/rsync
-
-if [ `id -u` -eq 0 ]; then
-  echo "Please do not run this as root. Use the 'mirror' user."
-  exit -1
-fi
-
-LOCK=/var/lock/`basename $0`.lock
-if ! lockfile -l 14400 -r 0 $LOCK; then
-  echo "Another process is already running. Aborting."
-  exit 1
-fi
+source $(dirname $(realpath $0))/.config.subr
+create_lock
 
 echo
 echo "--------------------------------------------------------------"
@@ -45,7 +34,7 @@ $RSYNC --verbose --human-readable        \
      --exclude='distribution/11.2/'           \
      --exclude='distribution/11.3/'           \
      --exclude='distribution/11.4/'           \
-     rsync.opensuse.org::opensuse-full/opensuse/ $MIRROR_DIR
+     $RSYNC_HOST::opensuse-full/opensuse/ $MIRROR_DIR
 
 ret=$?
 
@@ -55,14 +44,12 @@ echo
 
 # Update URLs in .repo files in update/ repos
 ls -1 $MIRROR_DIR/update/*/*.repo |
-  xargs sed -i 's#download.opensuse.org#packages.ifad.org#'
+  xargs sed -i "s#download.opensuse.org#$LOCAL_HOST#"
 
 # Update URLs in content.xml files in distribution/ repos
 ls -1 $MIRROR_DIR/distribution/*/repo/*/control.xml |
   xargs sed -i \
-  -e 's#http://download.opensuse.org/update/#http://packages.ifad.org/update/#' \
-  -e 's#http://download.opensuse.org/distribution/#http://packages.ifad.org/distribution/#'
-
-rm -f $LOCK
+  -e "s#http://download.opensuse.org/update/#http://$LOCAL_HOST/update/#" \
+  -e "s#http://download.opensuse.org/distribution/#http://$LOCAL_HOST/distribution/#"
 
 exit $ret
