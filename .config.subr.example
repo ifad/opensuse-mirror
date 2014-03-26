@@ -10,6 +10,18 @@ MIRROR_DIR=/srv/opensuse
 #
 RSYNC_HOST=rsync.opensuse.org
 
+# rsync.opensuse.org configuration
+#
+RSYNC_FULL_ROOT=opensuse-full/opensuse
+RSYNC_BUILDSERVICE_ROOT=buildservice-repos
+RSYNC_EVERGREEN_ROOT=buildservice-repos
+
+# ftp.gwdg.de
+#
+#RSYNC_FULL_ROOT=pub/opensuse
+#RSYNC_BUILDSERVICE_ROOT=pub/opensuse/repositories
+#RSYNC_EVERGREEN_ROOT=pub/opensuse/repositories
+
 # The FTP host used for legacy distros
 #
 FTP_HOST=ftp5.gwdg.de

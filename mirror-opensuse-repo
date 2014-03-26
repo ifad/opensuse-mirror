@@ -34,7 +34,7 @@ $RSYNC --verbose --human-readable        \
      --exclude='distribution/11.2/'           \
      --exclude='distribution/11.3/'           \
      --exclude='distribution/11.4/'           \
-     $RSYNC_HOST::opensuse-full/opensuse/ $MIRROR_DIR
+     $RSYNC_HOST::$RSYNC_FULL_ROOT/ $MIRROR_DIR
 
 ret=$?
 
