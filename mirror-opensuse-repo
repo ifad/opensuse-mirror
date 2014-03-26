@@ -17,23 +17,28 @@ echo "`date` - OpenSuSE mirror started"
 # * repositories/ fetched by mirror-buildservice-repo
 # * evergreen/    fetched by mirror-evergreen-repo
 #
-$RSYNC --verbose --human-readable        \
+$RSYNC --verbose --human-readable             \
      --recursive --links --perms --times      \
      --itemize-changes --stats --delete-after \
-     --exclude='osc/'                         \
-     --exclude='ports/'                       \
-     --exclude='evergreen/'                   \
-     --exclude='repositories/'                \
-     --exclude='update/11.0/'                 \
-     --exclude='update/11.1/'                 \
-     --exclude='update/11.2/'                 \
-     --exclude='update/11.3/'                 \
-     --exclude='update/11.4/'                 \
-     --exclude='distribution/11.0/'           \
-     --exclude='distribution/11.1/'           \
-     --exclude='distribution/11.2/'           \
-     --exclude='distribution/11.3/'           \
-     --exclude='distribution/11.4/'           \
+     -f 'include update/'                     \
+     -f 'include update/12.1'                 \
+     -f 'include update/12.1/**'              \
+     -f 'include update/12.2'                 \
+     -f 'include update/12.2/**'              \
+     -f 'include update/12.3'                 \
+     -f 'include update/12.3/**'              \
+     -f 'include update/13.1'                 \
+     -f 'include update/13.1/**'              \
+     -f 'include distribution/'               \
+     -f 'include distribution/12.1'           \
+     -f 'include distribution/12.1/**'        \
+     -f 'include distribution/12.2'           \
+     -f 'include distribution/12.2/**'        \
+     -f 'include distribution/12.3'           \
+     -f 'include distribution/12.3/**'        \
+     -f 'include distribution/13.1'           \
+     -f 'include distribution/13.1/**'        \
+     --exclude='*' \
      $RSYNC_HOST::$RSYNC_FULL_ROOT/ $MIRROR_DIR
 
 ret=$?
