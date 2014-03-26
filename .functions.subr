@@ -13,6 +13,7 @@ create_lock() {
     echo "Another process is already running. Aborting."
     exit 1
   fi
+  trap 'remove_lock' 'EXIT'
 }
 
 # Remove lockfile
@@ -20,7 +21,6 @@ create_lock() {
 remove_lock() {
   rm -f $LOCK
 }
-trap 'remove_lock' 'EXIT'
 
 # Update URIs in .repo files with $LOCAL_HOST
 #
