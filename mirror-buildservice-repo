@@ -22,10 +22,9 @@ cd $MIRROR_DIR
 
 # Fetch only our $REPO
 #
-$RSYNC --verbose --human-readable        \
-     --recursive --links --perms --times      \
-     --itemize-changes --stats --delete-after \
-     --exclude='openSUSE_11.4'                \
+$RSYNC --verbose --human-readable                          \
+     --recursive --links --perms --times                   \
+     --itemize-changes --stats --delete-after              \
      $RSYNC_HOST::$RSYNC_BUILDSERVICE_ROOT/$REPO $REPO_DIR
 
 ret=$?
