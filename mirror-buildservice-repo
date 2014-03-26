@@ -9,8 +9,8 @@ source $(dirname $(realpath $0))/.config.subr
 create_lock
 
 MIRROR_DIR=$MIRROR_DIR/repositories
-REPO=$BUILDSERVICE_REPO
-REPO_DIR=$MIRROR_DIR/$REPO/
+REPO=$BUILDSERVICE_REPO/
+REPO_DIR=$MIRROR_DIR/$REPO
 
 echo
 echo "--------------------------------------------------------------"
