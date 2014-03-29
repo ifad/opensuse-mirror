@@ -12,10 +12,9 @@ echo
 echo "--------------------------------------------------------------"
 echo "`date` - OpenSuSE mirror started"
 
-# Exclude 11.4 to avoid having it deleted, and exclude:
-#
-# * repositories/ fetched by mirror-buildservice-repo
-# * evergreen/    fetched by mirror-evergreen-repo
+# Include onlu update and distribution repos for
+# selected releases. TODO: generate the filters
+# list from a configuration variable.
 #
 $RSYNC --verbose --human-readable             \
      --recursive --links --perms --times      \

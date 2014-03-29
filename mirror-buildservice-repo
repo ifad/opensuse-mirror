@@ -1,9 +1,8 @@
 #!/bin/sh
 
-# Mirrors the home:vjt:ifad builservice repo.
-# Meant to be run daily.
+# Mirrors a builservice repo. Meant to be run daily.
 #
-#  -- m.barnaba@ifad.org  Tue Feb 19 19:52:47 CET 2013
+#  -- m.barnaba@ifad.org  Sat Mar 29 16:46:48 CET 2014
 #
 source $(dirname $(realpath $0))/.config.subr
 create_lock
