@@ -42,6 +42,10 @@ WGET=/usr/bin/wget
 #
 BUILDSERVICE_REPO=home:/vjt:/ifad
 
+# Evergreen version to fetch
+#
+EVERGREEN_VERSION=11.4
+
 # Load functions library
 #
 source $(dirname $(realpath $0))/.functions.subr

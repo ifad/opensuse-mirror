@@ -1,13 +1,13 @@
 #!/bin/sh
 
-# Mirrors the Evergreen repository for 11.4. Meant to be run daily.
+# Mirrors an Evergreen repository. Meant to be run daily.
 #
-#  -- m.barnaba@ifad.org  Tue Jan  7 17:06:49 CET 2014
+#  -- m.barnaba@ifad.org  Sat Mar 29 16:46:20 CET 2014
 #
 source $(dirname $(realpath $0))/.config.subr
 create_lock
 
-VERSION=11.4
+VERSION=$EVERGREEN_VERSION
 # Keep the trailing slash, or an excess standard/ directory will be created
 SOURCE=openSUSE:/Evergreen:/$VERSION/standard/
 REPO_DIR=$MIRROR_DIR/repositories/$SOURCE
