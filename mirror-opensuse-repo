@@ -48,7 +48,7 @@ echo
 
 # Update URLs in .repo files in update/ repos
 ls -1 $MIRROR_DIR/update/*/*.repo |
-  xargs sed -i "s#download.opensuse.org#$LOCAL_HOST#"
+  xargs sed -Ei sed -E "s#https?://download.opensuse.org/repositories/openSUSE:/(13.1):/Update/standard#http://$LOCAL_HOST/update/\\1#"
 
 # Update URLs in content.xml files in distribution/ repos
 ls -1 $MIRROR_DIR/distribution/*/repo/*/control.xml |
