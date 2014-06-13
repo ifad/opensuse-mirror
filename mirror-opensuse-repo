@@ -47,12 +47,12 @@ echo "--------------------------------------------------------------"
 echo
 
 # Update URLs in .repo files in update/ repos
-ls -1 $MIRROR_DIR/update/*/*.repo |
-  xargs sed -Ei "s#https?://download.opensuse.org/repositories/openSUSE:/([0-9\\.]):/Update/standard#http://$LOCAL_HOST/update/\\1#"
+find $MIRROR_DIR/update/*/*.repo -print0 |
+  xargs -0 sed -Ei "s#https?://download.opensuse.org/repositories/openSUSE:/([0-9\\.]+):/Update/standard#http://$LOCAL_HOST/update/\\1#"
 
 # Update URLs in content.xml files in distribution/ repos
-ls -1 $MIRROR_DIR/distribution/*/repo/*/control.xml |
-  xargs sed -i \
+find $MIRROR_DIR/distribution/*/repo/*/control.xml -print0 |
+  xargs -0 sed -i \
   -e "s#http://download.opensuse.org/update/#http://$LOCAL_HOST/update/#" \
   -e "s#http://download.opensuse.org/distribution/#http://$LOCAL_HOST/distribution/#"
 
