@@ -28,6 +28,8 @@ $RSYNC --verbose --human-readable             \
      -f 'include update/12.3/**'              \
      -f 'include update/13.1'                 \
      -f 'include update/13.1/**'              \
+     -f 'include update/13.2'                 \
+     -f 'include update/13.2/**'              \
      -f 'include distribution/'               \
      -f 'include distribution/12.1'           \
      -f 'include distribution/12.1/**'        \
@@ -37,6 +39,8 @@ $RSYNC --verbose --human-readable             \
      -f 'include distribution/12.3/**'        \
      -f 'include distribution/13.1'           \
      -f 'include distribution/13.1/**'        \
+     -f 'include distribution/13.2'           \
+     -f 'include distribution/13.2/**'        \
      --exclude='*' \
      $RSYNC_HOST::$RSYNC_FULL_ROOT/ $MIRROR_DIR
 
