@@ -13,9 +13,7 @@ echo
 echo "--------------------------------------------------------------"
 echo "`date` - OpenSuSE mirror started"
 
-# Include only update and distribution repos for
-# selected releases. TODO: generate the filters
-# list from a configuration variable.
+# Include only update and distribution repos for selected releases.
 #
 $RSYNC --verbose --human-readable             \
      --recursive --links --perms --times      \
