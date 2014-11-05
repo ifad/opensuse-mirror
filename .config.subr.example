@@ -1,10 +1,14 @@
 #
-#  - m.barnaba@ifad.org  Wed Mar 26 17:48:07 CET 2014
+#  - m.barnaba@ifad.org  Wed Nov  5 16:47:58 CET 2014
 #
 
 # The mirror root
 #
 MIRROR_DIR=/srv/opensuse
+
+# Which OpenSuSE versions to mirror, whitespace separated
+#
+VERSIONS="12.3 13.1 13.2"
 
 # The rsync host to fetch from
 #

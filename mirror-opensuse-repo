@@ -7,41 +7,21 @@
 #
 source $(dirname $(realpath $0))/.config.subr
 create_lock
+create_filter
 
 echo
 echo "--------------------------------------------------------------"
 echo "`date` - OpenSuSE mirror started"
 
-# Include onlu update and distribution repos for
+# Include only update and distribution repos for
 # selected releases. TODO: generate the filters
 # list from a configuration variable.
 #
 $RSYNC --verbose --human-readable             \
      --recursive --links --perms --times      \
      --itemize-changes --stats --delete-after \
-     -f 'include update/'                     \
-     -f 'include update/12.1'                 \
-     -f 'include update/12.1/**'              \
-     -f 'include update/12.2'                 \
-     -f 'include update/12.2/**'              \
-     -f 'include update/12.3'                 \
-     -f 'include update/12.3/**'              \
-     -f 'include update/13.1'                 \
-     -f 'include update/13.1/**'              \
-     -f 'include update/13.2'                 \
-     -f 'include update/13.2/**'              \
-     -f 'include distribution/'               \
-     -f 'include distribution/12.1'           \
-     -f 'include distribution/12.1/**'        \
-     -f 'include distribution/12.2'           \
-     -f 'include distribution/12.2/**'        \
-     -f 'include distribution/12.3'           \
-     -f 'include distribution/12.3/**'        \
-     -f 'include distribution/13.1'           \
-     -f 'include distribution/13.1/**'        \
-     -f 'include distribution/13.2'           \
-     -f 'include distribution/13.2/**'        \
-     --exclude='*' \
+     --filter "merge $FILTER"                 \
+     --exclude='*'                            \
      $RSYNC_HOST::$RSYNC_FULL_ROOT/ $MIRROR_DIR
 
 ret=$?
