@@ -42,9 +42,9 @@ RSYNC=/usr/bin/rsync
 #
 WGET=/usr/bin/wget
 
-# Buildservice repo to mirror
+# Buildservice repos to mirror
 #
-BUILDSERVICE_REPO=home:/vjt:/ifad
+BUILDSERVICE_REPOS="home:/vjt:/ifad network:/ha-clustering:/Stable"
 
 # Evergreen version to fetch
 #
