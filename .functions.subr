@@ -26,7 +26,7 @@ remove_lock() {
 create_filter() {
   FILTER=`mktemp`
 
-  _filter="include update/\ninclude distribution/\n"
+  _filter="include update/\ninclude distribution/\ninclude leap/\n"
 
   for ver in $VERSIONS; do
     _filter="${_filter}include update/${ver}\ninclude update/${ver}/**\n"
