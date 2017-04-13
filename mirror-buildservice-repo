@@ -23,7 +23,7 @@ mirror_repo() {
 
   $RSYNC --verbose --human-readable                          \
        --recursive --links --perms --times                   \
-       --itemize-changes --stats --delete-after              \
+       --itemize-changes --stats                             \
        $RSYNC_HOST::$RSYNC_BUILDSERVICE_ROOT/$REPO $REPO_DIR
 
   ret=$?

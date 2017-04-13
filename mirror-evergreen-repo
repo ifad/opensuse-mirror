@@ -20,7 +20,7 @@ mkdir -p $REPO_DIR
 
 $RSYNC --verbose --human-readable             \
      --recursive --links --perms --times      \
-     --itemize-changes --stats --delete-after \
+     --itemize-changes --stats                \
      --exclude rpm/src                        \
      $RSYNC_HOST::$RSYNC_EVERGREEN_ROOT/$SOURCE $REPO_DIR
 
