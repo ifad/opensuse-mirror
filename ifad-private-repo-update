@@ -4,8 +4,10 @@
 #  - a.dellaera@ifad.org  Fri Dec 12 12:02:00 CET 2013
 #  - m.barnaba@ifad.org   Sun Dec 15 21:32:26 CET 2013
 #  - m.barnaba@ifad.org   Sat Dec 28 21:13:20 CET 2013
+#  - m.barnaba@ifad.org   Thu Jun 21 10:02:13 CEST 2018
 
 REPODIR=/srv/opensuse/repositories/ifad-private
+ARCHIVE=_archive
 
 FILELIST=$REPODIR/.filelist
 TMPLIST=$REPODIR/.filelist.tmp
@@ -17,13 +19,13 @@ if [ -f "$TMPLIST" ]; then
 fi
 
 touch $TMPLIST
-find $REPODIR/i386 $REPODIR/x86_64 -type f | sort | tr '\n' '\0' | xargs -0 sha1sum > $TMPLIST
+find $REPODIR -name "*.rpm" -not -path "*/$ARCHIVE/*" -type f | sort | tr '\n' '\0' | xargs -0 sha1sum > $TMPLIST
 
 diff=`diff -u $FILELIST $TMPLIST`
 
 if test -n "$diff"; then
   echo -e "Updating RPM repository due to file changes.\n"
-  createrepo --update $REPODIR
+  createrepo --exclude "$ARCHIVE/*" --update $REPODIR
   rm $REPODIR/repodata/repomd.xml.asc
   gpg -a --detach-sign $REPODIR/repodata/repomd.xml
 
