@@ -17,7 +17,7 @@ echo "`date` - OpenSuSE mirror started"
 #
 $RSYNC --verbose --human-readable             \
      --recursive --links --perms --times      \
-     --itemize-changes --stats                \
+     --itemize-changes --stats --delete       \
      --filter "merge $FILTER"                 \
      --exclude='*'                            \
      $RSYNC_HOST::$RSYNC_FULL_ROOT/ $MIRROR_DIR
