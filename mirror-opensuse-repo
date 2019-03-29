@@ -28,17 +28,9 @@ echo "`date` - OpenSuSE mirror completed with status $ret"
 echo "--------------------------------------------------------------"
 echo
 
-# Update URLs in .repo files in update/ leap repos
+# Update URLs in .repo files in update/ repos
 find $MIRROR_DIR/update/leap/*[0-9]/{,non-}oss/*.repo -print0 |
   xargs -0 sed -Ei "s#https?://download.opensuse.org/#http://$LOCAL_HOST/#"
-
-# Update URLs in .repo files in update/ repos
-find $MIRROR_DIR/update/*[1-9]/*.repo -print0 |
-  xargs -0 sed -Ei "s#https?://download.opensuse.org/repositories/openSUSE:/([0-9\\.]+):/Update/standard#http://$LOCAL_HOST/update/\\1#"
-
-# Update URLs in .repo files in non-free update/ repos
-find $MIRROR_DIR/update/*-non-oss/*.repo -print0 |
-  xargs -0 sed -Ei "s#https?://download.opensuse.org/repositories/openSUSE:/([0-9\\.]+):/NonFree:/Update/standard#http://$LOCAL_HOST/update/\\1-non-oss#"
 
 # Update URLs in content.xml files in distribution/ repos
 find $MIRROR_DIR/distribution/{,leap/}*/repo/*/control.xml -print0 |
