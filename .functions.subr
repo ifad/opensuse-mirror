@@ -56,3 +56,11 @@ replace_repo_uris() {
   find $REPO_DIR -name \*.repo -print0 | \
     xargs -0 sed -i "s#download.opensuse.org#$LOCAL_HOST#"
 }
+
+# Path to rsync binary
+#
+RSYNC=/usr/bin/rsync
+
+# Path to wget binary
+#
+WGET=/usr/bin/wget

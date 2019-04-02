@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# Mirrors the full centos repo.
+#
+#  - m.barnaba  Tue Apr  2 19:27:48 CEST 2019
+#
+
+source $(dirname $(realpath $0))/.config.centos.subr
+create_lock
+
+echo
+echo "--------------------------------------------------------------"
+echo "`date` - CentOS mirror started"
+
+$RSYNC --verbose --human-readable          \
+       --recursive --links --perms --times \
+       --itemize-changes --stats --delete  \
+       $RSYNC_HOST $MIRROR_DIR
+
+ret=$?
+
+echo "`date` - CentOS mirror completed with status $ret"
+echo "--------------------------------------------------------------"
+echo
+
+exit $ret
