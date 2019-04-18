@@ -20,7 +20,7 @@ $RSYNC --verbose --human-readable             \
      --itemize-changes --stats --delete       \
      --filter "merge $FILTER"                 \
      --exclude='*'                            \
-     $RSYNC_HOST::$RSYNC_FULL_ROOT/ $MIRROR_DIR
+     $RSYNC_HOST $MIRROR_DIR
 
 ret=$?
 

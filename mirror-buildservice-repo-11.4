@@ -8,6 +8,10 @@
 source $(dirname $(realpath $0))/.config.subr
 create_lock
 
+# The FTP host used for legacy distros
+#
+FTP_HOST=ftp5.gwdg.de
+
 MIRROR_DIR=$MIRROR_DIR/repositories
 REPO=$BUILDSERVICE_REPO/openSUSE_11.4/
 REPO_DIR=$MIRROR_DIR/$REPO

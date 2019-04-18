@@ -4,31 +4,36 @@
 #
 #  -- m.barnaba@ifad.org  Sat Mar 29 16:46:48 CET 2014
 #
-source $(dirname $(realpath $0))/.config.subr
+source $(dirname $(realpath $0))/.config.buildservice.subr
 create_lock
 
-MIRROR_DIR=$MIRROR_DIR/repositories
-
 mirror_repo() {
-  REPO="$1/"
-  REPO_DIR="$MIRROR_DIR/$REPO"
+  REPO="$1"
 
   echo
   echo "--------------------------------------------------------------"
-  echo "`date` - OpenSuSE buildservice repo mirror started"
+  echo "`date` - OpenSuSE buildservice $REPO mirror started"
 
 
-  mkdir -p $REPO_DIR
+  mkdir -p $MIRROR_DIR/$REPO
   cd $MIRROR_DIR
 
-  $RSYNC --verbose --human-readable                          \
-       --recursive --links --perms --times                   \
-       --itemize-changes --stats                             \
-       $RSYNC_HOST::$RSYNC_BUILDSERVICE_ROOT/$REPO $REPO_DIR
+  $RSYNC --verbose --human-readable --no-motd                     \
+       --recursive --links --perms --times                        \
+       --itemize-changes --stats                                  \
+       --include 'openSUSE_Leap_*' --include 'openSUSE_Leap_*/**' \
+       --include 'RHEL_*'          --include 'RHEL_*/**'          \
+       --include 'SLE_*'           --include 'SLE_*/**'           \
+       --exclude 'rpm/src'         --exclude 'rpm/src/**'         \
+       --include 'rpm'             --include 'rpm/**'             \
+       --include 'repodata'        --include 'repodata/**'        \
+       --include '*.repo'                                         \
+       --exclude '*'                                              \
+       $RSYNC_HOST/$REPO/ $MIRROR_DIR/$REPO
 
   ret=$?
 
-  echo "`date` - OpenSuSE buildservice repo mirror completed with status $ret"
+  echo "`date` - OpenSuSE buildservice $REPO mirror completed with status $ret"
   echo "--------------------------------------------------------------"
   echo
 }
