@@ -21,8 +21,11 @@ mirror_repo() {
   $RSYNC --verbose --human-readable --no-motd                     \
        --recursive --links --perms --times                        \
        --itemize-changes --stats                                  \
+       --exclude 'openSUSE_*/src'  --exclude 'openSUSE_*/src/**'  \
        --include 'openSUSE_Leap_*' --include 'openSUSE_Leap_*/**' \
+       --exclude 'RHEL_*/src'      --exclude 'RHEL_*/src/**'      \
        --include 'RHEL_*'          --include 'RHEL_*/**'          \
+       --exclude 'SLE_*/src'       --exclude 'SLE_*/src/**'       \
        --include 'SLE_*'           --include 'SLE_*/**'           \
        --exclude 'rpm/src'         --exclude 'rpm/src/**'         \
        --include 'rpm'             --include 'rpm/**'             \
