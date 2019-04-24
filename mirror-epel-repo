@@ -22,9 +22,10 @@ mirror_epel() {
          --include "$VER"                    \
          --include "$VER/x86_64"             \
          --include "$VER/x86_64/**"          \
+         --include "RPM-GPG-KEY-EPEL-$VER*"  \
          --exclude "*"                       \
          $RSYNC_HOST $MIRROR_DIR
-  
+
   ret=$?
   
   echo "`date` - CentOS EPEL $VER mirror completed with status $ret"
