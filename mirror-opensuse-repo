@@ -33,8 +33,8 @@ replace_repo_uris $MIRROR_DIR/update
 
 # Update URLs in content.xml files in distribution/ repos
 find $MIRROR_DIR/distribution/{,leap/}*/repo/*/control.xml -print0 |
-  xargs -0 sed -i \
-  -e "s#http://download.opensuse.org/update/#http://$LOCAL_HOST/update/#" \
-  -e "s#http://download.opensuse.org/distribution/#http://$LOCAL_HOST/distribution/#"
+  xargs -0 sed -Ei \
+  -e "s#https?://download.opensuse.org/update/#https://$LOCAL_HOST/update/#" \
+  -e "s#https?://download.opensuse.org/distribution/#https://$LOCAL_HOST/distribution/#"
 
 exit $ret
