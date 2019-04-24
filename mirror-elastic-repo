@@ -27,6 +27,8 @@ mirror_repo() {
 [$REPO]
 name=Elastic repository $REPO
 baseurl=$MIRROR_URL/$REPO
+gpgcheck=1
+gpgkey=$MIRROR_URL/GPG-KEY-elasticsearch
 enabled=1
 autorefresh=1
 type=rpm-md
