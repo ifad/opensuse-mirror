@@ -29,8 +29,7 @@ echo "--------------------------------------------------------------"
 echo
 
 # Update URLs in .repo files in update/ repos
-find $MIRROR_DIR/update/leap/*[0-9]/{,non-}oss/*.repo -print0 |
-  xargs -0 sed -Ei "s#https?://download.opensuse.org/#http://$LOCAL_HOST/#"
+replace_repo_uris $MIRROR_DIR/update
 
 # Update URLs in content.xml files in distribution/ repos
 find $MIRROR_DIR/distribution/{,leap/}*/repo/*/control.xml -print0 |

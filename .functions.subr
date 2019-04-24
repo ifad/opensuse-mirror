@@ -53,8 +53,8 @@ trap '_cleanup' 'EXIT'
 # Update URIs in .repo files with $LOCAL_HOST
 #
 replace_repo_uris() {
-  find $REPO_DIR -name \*.repo -print0 | \
-    xargs -0 sed -i "s#download.opensuse.org#$LOCAL_HOST#"
+  find $1 -name \*.repo -user $LOGNAME -print0 | \
+    xargs -0 sed -Ei "s#https?://download.opensuse.org/#https://$LOCAL_HOST/#"
 }
 
 # Path to rsync binary

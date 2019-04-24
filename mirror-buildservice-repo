@@ -45,5 +45,5 @@ for repo in $BUILDSERVICE_REPOS; do
   mirror_repo $repo
 done
 
-replace_repo_uris
+replace_repo_uris $MIRROR_DIR
 exit $ret
