@@ -1,0 +1,39 @@
+#!/bin/sh
+
+# Mirrors the full centos repo.
+#
+#  - m.barnaba  Tue Apr  2 19:27:48 CEST 2019
+#
+
+source $(dirname $(realpath $0))/.config.epel.subr
+create_lock
+
+mirror_epel() {
+  VER="$1"
+
+  echo
+  echo "--------------------------------------------------------------"
+  echo "`date` - CentOS EPEL $VER mirror started"
+  
+  $RSYNC --verbose --human-readable          \
+         --recursive --links --perms --times \
+         --itemize-changes --stats --delete  \
+         --exclude "$VER/x86_64/debug"       \
+         --include "$VER"                    \
+         --include "$VER/x86_64"             \
+         --include "$VER/x86_64/**"          \
+         --exclude "*"                       \
+         $RSYNC_HOST $MIRROR_DIR
+  
+  ret=$?
+  
+  echo "`date` - CentOS EPEL $VER mirror completed with status $ret"
+  echo "--------------------------------------------------------------"
+  echo
+}
+
+for epel_version in $EPEL_VERSIONS; do
+  mirror_epel $epel_version
+done
+
+exit $ret

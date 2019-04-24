@@ -5,7 +5,7 @@
 #  -- m.barnaba@ifad.org  Tue Feb 19 19:52:47 CET 2013
 #  -- m.barnaba@ifad.org  Tue Jan  7 19:07:55 CET 2014
 #
-source $(dirname $(realpath $0))/.config.subr
+source $(dirname $(realpath $0))/.config.opensuse.subr
 create_lock
 create_filter
 
