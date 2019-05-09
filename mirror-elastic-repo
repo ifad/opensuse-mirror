@@ -34,7 +34,7 @@ autorefresh=1
 type=rpm-md
 EOF
 
-  echo "`date` - OpenSuSE buildservice $REPO mirror completed"
+  echo "`date` - Elastic $REPO mirror completed"
   echo "--------------------------------------------------------------"
   echo
 
