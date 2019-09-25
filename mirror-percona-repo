@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# Mirrors the full Percona repo.
+#
+#  - m.barnaba  Mon Jul 15 17:02:57 CEST 2019
+#
+
+source $(dirname $(realpath $0))/.config.percona.subr
+create_lock
+
+echo
+echo "--------------------------------------------------------------"
+echo "`date` - Percona mirror started"
+
+$RSYNC --verbose --human-readable          \
+       --recursive --links --perms --times \
+       --itemize-changes --stats --delete  \
+       $RSYNC_HOST $MIRROR_DIR
+
+ret=$?
+
+echo "`date` - Percona mirror completed with status $ret"
+echo "--------------------------------------------------------------"
+echo
+
+exit $ret

@@ -1,10 +1,10 @@
 #!/bin/sh
 
-# Mirrors the Elastic repos. Meant to be run daily.
+# Mirrors the ORACLE Shit repos. Meant to be run daily.
 #
-#  -- m.barnaba@ifad.org  Tue Apr 23 14:40:29 CEST 2019
+#  -- m.barnaba@ifad.org  Wed Sep 25 21:54:10 CEST 2019
 #
-source $(dirname $(realpath $0))/.config.elastic.subr
+source $(dirname $(realpath $0))/.config.oracle.subr
 create_lock
 
 mirror_repo() {
@@ -12,12 +12,17 @@ mirror_repo() {
 
   echo
   echo "--------------------------------------------------------------"
-  echo "`date` - Elastic $REPO mirror started"
+  echo "`date` - ORACLE $REPO mirror started"
 
   mkdir -p $MIRROR_DIR
 
+  # Create stupid symlink as ORACLE dictates it and we don't like it.
+  ln -s . $MIRROR_DIR/$REPO/getPackage
+
   echo "Syncing packages..."
   reposync --newest-only --quiet --gpgcheck --repoid=$REPO --download_path=$MIRROR_DIR
+
+  rm -f $MIRROR_DIR/$REPO/getPackage
 
   echo "Creating repo metadata..."
   createrepo $MIRROR_DIR/$REPO
@@ -25,22 +30,22 @@ mirror_repo() {
   echo "Regenerating .repo file..."
   cat <<EOF > $MIRROR_DIR/${REPO}.repo
 [$REPO]
-name=Elastic repository $REPO
+name=ORACLE repository $REPO
 baseurl=$MIRROR_URL/$REPO
 gpgcheck=1
-gpgkey=$MIRROR_URL/GPG-KEY-elasticsearch
+gpgkey=$MIRROR_URL/$GPG_KEY
 enabled=1
 autorefresh=1
 type=rpm-md
 EOF
 
-  echo "`date` - Elastic $REPO mirror completed"
+  echo "`date` - ORACLE $REPO mirror completed"
   echo "--------------------------------------------------------------"
   echo
 
 }
 
 # Mirror repos
-for repo in $ELASTIC_REPOS; do
+for repo in $ORACLE_REPOS; do
   mirror_repo $repo
 done
