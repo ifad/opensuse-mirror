@@ -7,12 +7,12 @@
 source $(dirname $(realpath $0))/.config.buildservice.subr
 create_lock
 
-mirror_repo() {
+mirror_repo_rsync() {
   REPO="$1"
 
   echo
   echo "--------------------------------------------------------------"
-  echo "`date` - OpenSuSE buildservice $REPO mirror started"
+  echo "`date` - OpenSuSE buildservice $REPO rsync mirror started"
 
 
   mkdir -p $MIRROR_DIR/$REPO
@@ -41,9 +41,67 @@ mirror_repo() {
   echo
 }
 
-for repo in $BUILDSERVICE_REPOS; do
-  mirror_repo $repo
+mirror_repo_yum() {
+  REPO="$1"
+
+  if ! echo $REPO | grep -q ^buildservice:; then
+    echo "Invalid repo ID $REPO. Requires a buildservice:XXX- heading to distinguish across multiple repos."
+    return
+  fi
+
+  echo
+  echo "--------------------------------------------------------------"
+  echo "`date` - OpenSuSE buildservice $REPO yum mirror started"
+
+  REPO_BS_ID=$(echo $REPO | sed -r -e 's#buildservice:.*?-##' -e 's#_#:#g')
+  REPO_BS_PATH=$(grep ^baseurl /etc/yum/repos.d/${REPO}.repo|sed -r -e 's#^baseurl=https?://[^/]+/repositories/##' -e 's#/$##')
+
+  REPO_DIR=$MIRROR_DIR/$REPO_BS_PATH
+
+  mkdir -p $REPO_DIR
+
+  # We want yum to download in the same directory as rsync, so to not change systems' configuration,
+  # but there is no option in reposync to ask to not create a directory whose name is the repo id, so
+  # we create a symlink from the target directory that reposync uses to the directory containing the
+  # symlink. Crude hack, but it works.
+  ln -s . $REPO_DIR/$REPO
+
+  echo "Syncing packages..."
+  reposync --newest-only --gpgcheck --repoid=$REPO --download_path=$REPO_DIR
+
+  # Remove the symlink to avoid createrepo infinite loops.
+  #
+  rm -f $REPO_DIR/$REPO
+
+  echo "Creating repo metadata..."
+  createrepo --verbose --simple-md-filenames $REPO_DIR
+
+  echo "Regenerating .repo file..."
+
+  cat <<EOF > $REPO_DIR/${REPO_BS_ID}.repo
+[$REPO]
+name=Buildservice repository $REPO_BS_ID
+baseurl=$MIRROR_URL/$REPO_BS_PATH
+gpgcheck=1
+gpgkey=$MIRROR_URL/$REPO_BS_PATH/repodata/repomd.xml.key
+enabled=1
+autorefresh=1
+type=rpm-md
+EOF
+
+  echo "`date` - Buildservice $REPO yum mirror completed"
+  echo "--------------------------------------------------------------"
+  echo
+}
+
+
+for repo in $BUILDSERVICE_REPOS_RSYNC; do
+  mirror_repo_rsync $repo
 done
 
 replace_repo_uris $MIRROR_DIR
+
+for repo in $BUILDSERVICE_REPOS_YUM; do
+  mirror_repo_yum $repo
+done
 exit $ret
