@@ -67,7 +67,7 @@ mirror_repo_yum() {
   ln -s . $REPO_DIR/$REPO
 
   echo "Syncing packages..."
-  reposync --newest-only --gpgcheck --repoid=$REPO --download_path=$REPO_DIR
+  reposync --gpgcheck --repoid=$REPO --download_path=$REPO_DIR
 
   # Remove the symlink to avoid createrepo infinite loops.
   #
