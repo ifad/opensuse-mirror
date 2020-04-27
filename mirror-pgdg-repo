@@ -1,0 +1,102 @@
+#!/bin/bash
+
+# Mirrors the full pgdg repo.
+#
+#  - m.barnaba  Sun Apr 26 10:22:15 CEST 2020
+#
+
+source $(dirname $(realpath $0))/.config.pgdg.subr
+create_lock
+
+download_pgdg_yum_gpg_key() {
+  pg_vers=$1
+  destdir=$2
+
+  curl -so $destdir/RPM-GPG-KEY-$pg_vers \
+    https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-$pg_vers
+}
+
+mirror_pgdg_rsync() {
+  # Split $1 on :
+  IFS=: read -ra spec <<< "$1"
+
+  pkg_fmt=${spec[0]}
+  pg_vers=${spec[1]}
+  os_spec=${spec[2]}
+
+  if [ -z "$pkg_fmt" -o -z "$pg_vers" -o -z "$os_spec" ]; then
+    echo "ERROR: Invalid pgdg spec: $1"
+    return
+  fi
+
+  url="$RSYNC_HOST/pg${pkg_fmt}-${pg_vers}/${os_spec}/"
+  dst="$MIRROR_DIR/$pg_vers/$os_spec"
+
+  echo
+  echo "--------------------------------------------------------------"
+  echo "`date` - PGDG mirror started for $os_spec ($pkg_fmt) from $url to $dst"
+
+  mkdir -p $dst
+  
+  $RSYNC --verbose --human-readable          \
+         --recursive --links --perms --times \
+         --itemize-changes --stats --delete  \
+         $url $dst
+
+  ret=$?
+  
+  echo "`date` - PGDG rirror from $url to $dst completed with status $ret"
+  echo "--------------------------------------------------------------"
+  echo
+
+  if [ "$pkg_fmt" == "rpm" ]; then
+    download_pgdg_yum_gpg_key $pg_vers $(dirname $dst)
+  fi
+}
+
+mirror_pgdg_yum() {
+  # Split $1 on :
+  IFS=: read -ra spec <<< "$1"
+
+  pg_vers="${spec[0]}"
+  os_spec="${spec[1]}"
+
+  repo="pgdg${pg_vers}-nonfree-$(echo $os_spec | sed 's#/#-#g')"
+
+  dir=non-free/$pg_vers/$os_spec
+  dst=$MIRROR_DIR/$dir
+
+  echo
+  echo "--------------------------------------------------------------"
+  echo "`date` - PGDG non-free repo $repo mirror started to $dst"
+
+  mkdir -p $dst
+
+  ln -sf . $dst/$repo # HACK
+
+  echo "Syncing packages..."
+  reposync --quiet --gpgcheck --repoid=$repo --download_path=$dst
+
+  echo "Creating repo metadata..."
+  createrepo $dst
+
+  ret=$?
+
+  echo "`date` - PGDG non-free repo $repo to $dst mirror completed with status $ret"
+  echo "--------------------------------------------------------------"
+  echo
+
+  download_pgdg_yum_gpg_key $pg_vers $(dirname $dst)
+}
+
+# rsync repos
+#
+for pg_spec in $PG_RSYNC; do
+  mirror_pgdg_rsync $pg_spec
+done
+
+# mirror repos
+#
+for repo in $PG_NONFREE; do
+  mirror_pgdg_yum $repo
+done
