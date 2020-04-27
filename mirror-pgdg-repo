@@ -63,6 +63,11 @@ mirror_pgdg_yum() {
 
   repo="pgdg${pg_vers}-nonfree-$(echo $os_spec | sed 's#/#-#g')"
 
+  if [ -z "$pg_vers" -o -z "$os_spec" ]; then
+    echo "ERROR: Invalid pgdg spec: $1"
+    return
+  fi
+
   dir=non-free/$pg_vers/$os_spec
   dst=$MIRROR_DIR/$dir
 
