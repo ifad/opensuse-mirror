@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# Mirrors the full remi repo.
+#
+#  - m.barnaba  Sun Apr 26 10:22:15 CEST 2020
+#
+
+source $(dirname $(realpath $0))/.config.remi.subr
+create_lock
+
+mirror_remi() {
+  VER="$1"
+
+  echo
+  echo "--------------------------------------------------------------"
+  echo "`date` - CentOS REMI $VER mirror started"
+  
+  $RSYNC --verbose --human-readable          \
+         --recursive --links --perms --times \
+         --itemize-changes --stats --delete  \
+         --include "$VER"                    \
+         --include "$VER/remi"               \
+         --include "$VER/remi/x86_64"        \
+         --include "$VER/remi/x86_64/**"     \
+         --exclude "*"                       \
+         $RSYNC_HOST $MIRROR_DIR
+
+  ret=$?
+  
+  echo "`date` - CentOS REMI $VER mirror completed with status $ret"
+  echo "--------------------------------------------------------------"
+  echo
+}
+
+curl -so $MIRROR_DIR/RPM-GPG-KEY-remi https://rpms.remirepo.net/RPM-GPG-KEY-remi
+
+for remi_version in $REMI_VERSIONS; do
+  mirror_remi $remi_version
+done
+
+exit $ret
