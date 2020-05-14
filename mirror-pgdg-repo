@@ -12,7 +12,7 @@ download_pgdg_yum_gpg_key() {
   pg_vers=$1
   destdir=$2
 
-  curl -so $destdir/RPM-GPG-KEY-$pg_vers \
+  curl -Lso $destdir/RPM-GPG-KEY-$pg_vers \
     https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-$pg_vers
 }
 
@@ -77,7 +77,7 @@ mirror_pgdg_yum() {
 
   mkdir -p $dst
 
-  ln -sf . $dst/$repo # HACK
+  [ ! -L $dst/$repo ] && ln -sf . $dst/$repo # HACK
 
   echo "Syncing packages..."
   reposync --quiet --gpgcheck --repoid=$repo --download_path=$dst
