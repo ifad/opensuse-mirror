@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# Mirrors the full networkradius repos.
+#
+#  - m.barnaba  Thu May 14 16:43:53 CEST 2020
+#
+
+source $(dirname $(realpath $0))/.config.networkradius.subr
+create_lock
+
+download_yum_gpg_key() {
+  destdir=$1
+
+  cp /etc/pki/rpm-gpg/RPM-GPG-KEY-NetworkRadius $destdir/RPM-GPG-KEY
+}
+
+mirror_networkradius_yum() {
+  dir=$1
+  repo=networkradius-$1
+  dst=$MIRROR_DIR/$dir
+
+  echo
+  echo "--------------------------------------------------------------"
+  echo "`date` - NETWORKRADIUS repo $repo mirror started to $dst"
+
+  mkdir -p $dst
+
+  [ ! -L $dst/$repo ] && ln -sf . $dst/$repo # HACK
+
+  echo "Syncing packages..."
+  reposync --quiet --gpgcheck --repoid=$repo --download_path=$dst
+
+  echo "Creating repo metadata..."
+  createrepo $dst
+
+  ret=$?
+
+  echo "`date` - NETWORKRADIUS repo $repo to $dst mirror completed with status $ret"
+  echo "--------------------------------------------------------------"
+  echo
+
+  download_yum_gpg_key $(dirname $dst)
+}
+
+# mirror repos
+#
+for repo in $REPOS ; do
+  mirror_networkradius_yum $repo
+done
