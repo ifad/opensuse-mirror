@@ -12,8 +12,15 @@ download_pgdg_yum_gpg_key() {
   pg_vers=$1
   destdir=$2
 
-  curl -Lso $destdir/RPM-GPG-KEY-$pg_vers \
-    https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-$pg_vers
+  inkey="RPM-GPG-KEY-PGDG"
+  outkey="RPM-GPG-KEY"
+
+  if [ -n "$pg_vers" ]; then
+    inkey="${inkey}-$pg_vers"
+    outkey="${outkey}-$pg_vers"
+  fi
+
+  curl -Lso $destdir/$outkey https://download.postgresql.org/pub/repos/yum/$inkey
 }
 
 mirror_pgdg_rsync() {
@@ -24,13 +31,19 @@ mirror_pgdg_rsync() {
   pg_vers=${spec[1]}
   os_spec=${spec[2]}
 
-  if [ -z "$pkg_fmt" -o -z "$pg_vers" -o -z "$os_spec" ]; then
+  if [ -z "$pkg_fmt" -o -z "$os_spec" ]; then
     echo "ERROR: Invalid pgdg spec: $1"
     return
   fi
 
-  url="$RSYNC_HOST/pg${pkg_fmt}-${pg_vers}/${os_spec}/"
-  dst="$MIRROR_DIR/$pg_vers/$os_spec"
+  if [ -n "$pg_vers" ]; then
+    url="$RSYNC_HOST/pg${pkg_fmt}-${pg_vers}/${os_spec}/"
+    dst="$MIRROR_DIR/${pg_vers}/${os_spec}"
+  else
+    url="$RSYNC_HOST/pg${pkg_fmt}/${os_spec}/"
+    dst="$MIRROR_DIR/${pkg_fmt}/${os_spec}"
+  fi
+
 
   echo
   echo "--------------------------------------------------------------"
@@ -49,8 +62,8 @@ mirror_pgdg_rsync() {
   echo "--------------------------------------------------------------"
   echo
 
-  if [ "$pkg_fmt" == "rpm" ]; then
-    download_pgdg_yum_gpg_key $pg_vers $(dirname $dst)
+  if [ "$pkg_fmt" == "rpm" -o "$pkg_fmt" == "common" ]; then
+    download_pgdg_yum_gpg_key "$pg_vers" $(dirname $dst)
   fi
 }
 
