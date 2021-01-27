@@ -15,6 +15,9 @@ echo "`date` - CentOS mirror started"
 $RSYNC --verbose --human-readable          \
        --recursive --links --perms --times \
        --itemize-changes --stats --delete  \
+       --exclude '*/*/ppc64le' \
+       --exclude '*/*/aarch64' \
+       --exclude '8-stream/isos' \
        $RSYNC_HOST $MIRROR_DIR
 
 ret=$?
