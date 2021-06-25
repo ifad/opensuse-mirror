@@ -18,9 +18,14 @@ $RSYNC --verbose --human-readable          \
        --exclude '*/*/ppc64le' \
        --exclude '*/*/aarch64' \
        --exclude '8-stream/isos' \
+       --exclude '7Server' \
+       --exclude '8Server' \
        $RSYNC_HOST $MIRROR_DIR
 
 ret=$?
+
+ln -nsf 7 $MIRROR_DIR/7Server
+ln -nsf 8 $MIRROR_DIR/8Server
 
 echo "`date` - CentOS mirror completed with status $ret"
 echo "--------------------------------------------------------------"
