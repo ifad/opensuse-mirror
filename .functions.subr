@@ -29,8 +29,12 @@ create_filter() {
   _filter="include update/\ninclude distribution/\ninclude leap/\n"
 
   for ver in $VERSIONS; do
-    _filter="${_filter}include update/${ver}\ninclude update/${ver}/**\n"
-    _filter="${_filter}include distribution/${ver}\ninclude distribution/${ver}/**\n"
+    _filter="${_filter}include update/${ver}\n"
+    _filter="${_filter}exclude update/${ver}/*_debug\n"
+    _filter="${_filter}include update/${ver}/**\n"
+    _filter="${_filter}include distribution/${ver}\n"
+    _filter="${_filter}include distribution/${ver}/repo\n"
+    _filter="${_filter}include distribution/${ver}/repo/**\n"
   done
 
   echo -ne $_filter > $FILTER
