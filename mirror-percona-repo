@@ -7,14 +7,19 @@
 
 source $(dirname $(realpath $0))/.config.percona.subr
 create_lock
+create_filter_percona
 
 echo
 echo "--------------------------------------------------------------"
 echo "`date` - Percona mirror started"
 
+cat $FILTER
+
 $RSYNC --verbose --human-readable          \
        --recursive --links --perms --times \
        --itemize-changes --stats --delete  \
+       --filter "merge $FILTER"            \
+       --exclude='*'                       \
        $RSYNC_HOST $MIRROR_DIR
 
 ret=$?

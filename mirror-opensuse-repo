@@ -7,7 +7,7 @@
 #
 source $(dirname $(realpath $0))/.config.opensuse.subr
 create_lock
-create_filter
+create_filter_suse
 
 echo
 echo "--------------------------------------------------------------"

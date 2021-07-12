@@ -21,9 +21,10 @@ remove_lock() {
   rm -f $LOCK
 }
 
-# Create filter rules from the VERSIONS config variable
+# Create filter rules from the VERSIONS config variable. Follows the
+# OpenSuSE repositories semantics.
 #
-create_filter() {
+create_filter_suse() {
   FILTER=`mktemp`
 
   _filter="include update/\ninclude distribution/\ninclude leap/\n"
@@ -35,6 +36,25 @@ create_filter() {
     _filter="${_filter}include distribution/${ver}\n"
     _filter="${_filter}include distribution/${ver}/repo\n"
     _filter="${_filter}include distribution/${ver}/repo/**\n"
+  done
+
+  echo -ne $_filter > $FILTER
+}
+
+# Create filter rules from the VERSIONS config variable. Follows the
+# Percona repositories semantics.
+#
+create_filter_percona() {
+  FILTER=`mktemp`
+
+  _filter="include PERCONA-PACKAGING-KEY\ninclude RPM-GPG-KEY-Percona\ninclude release\n"
+
+  for ver in $VERSIONS; do
+    _filter="${_filter}include release/${ver}\n"
+    _filter="${_filter}include release/${ver}*\n"
+    _filter="${_filter}exclude release/${ver}/SRPMS\n"
+    _filter="${_filter}exclude *MongoDB*\n"
+    _filter="${_filter}include release/${ver}/**\n"
   done
 
   echo -ne $_filter > $FILTER
