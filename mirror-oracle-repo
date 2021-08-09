@@ -14,7 +14,7 @@ mirror_repo() {
   echo "--------------------------------------------------------------"
   echo "`date` - ORACLE $REPO mirror started"
 
-  mkdir -p $MIRROR_DIR
+  mkdir -p $MIRROR_DIR/$REPO
 
   # Create stupid symlink as ORACLE dictates it and we don't like it.
   ln -s . $MIRROR_DIR/$REPO/getPackage
